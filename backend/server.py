@@ -1,7 +1,6 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Depends, WebSocket, WebSocketDisconnect, Request, Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
-from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
@@ -39,19 +38,24 @@ security = HTTPBearer()
 
 
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
-origins = [
-  "http://localhost:3000",
-  "http://192.168.1.2:3000",
+def parse_origins(value: str):
+    return [o.strip() for o in (value or "").split(",") if o.strip()]
+
+origins = parse_origins(os.getenv("CORS_ORIGINS")) or [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 app.add_middleware(
-  CORSMiddleware,
-  allow_origins=origins,
-  allow_credentials=True,   # only if using cookies
-  allow_methods=["*"],
-  allow_headers=["*"],
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=False,  # JWT header -> không cần cookie
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
