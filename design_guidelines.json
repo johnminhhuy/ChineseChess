@@ -1,0 +1,126 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "The Imperial Gambit",
+      "aesthetic": "Traditional Chinese Luxury x Modern E-Sports",
+      "core_metaphor": "A high-stakes match in a forbidden palace at night.",
+      "principles": [
+        "Wood over Concrete: No gray backgrounds. Use warm dark browns.",
+        "Ink over Shadows: Use deep black gradients instead of generic drop shadows.",
+        "Gold over Blue: Primary actions are Gold or Vermilion, never SaaS Blue.",
+        "Texture over Flatness: Use grain and paper textures to kill the digital sheen."
+      ]
+    },
+    "typography": {
+      "fonts": {
+        "heading": {
+          "family": "Cormorant Garamond",
+          "weights": ["400", "600", "700"],
+          "usage": "All Headings (h1-h3), Hero Text, Modal Titles"
+        },
+        "body": {
+          "family": "Manrope",
+          "weights": ["400", "500", "700"],
+          "usage": "UI Text, Chat, Statistics, Buttons"
+        },
+        "accent": {
+          "family": "Ma Shan Zheng",
+          "weights": ["400"],
+          "usage": "Special decorative characters, Rank titles (King, Pawn)"
+        }
+      },
+      "installation": "Import these in index.css: @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Manrope:wght@400;500;700&family=Ma+Shan+Zheng&display=swap');"
+    },
+    "colors": {
+      "palette": {
+        "background": "#1a1614",
+        "foreground": "#e6dcc3",
+        "card": "#241e1b",
+        "card_foreground": "#e6dcc3",
+        "popover": "#241e1b",
+        "popover_foreground": "#e6dcc3",
+        "primary": "#c92a2a",
+        "primary_foreground": "#ffffff",
+        "secondary": "#d4af37",
+        "secondary_foreground": "#1a1614",
+        "muted": "#3a2e2a",
+        "muted_foreground": "#a89f91",
+        "accent": "#d4af37",
+        "accent_foreground": "#1a1614",
+        "destructive": "#7f1d1d",
+        "destructive_foreground": "#ffffff",
+        "border": "#4a3b32",
+        "input": "#3a2e2a",
+        "ring": "#d4af37"
+      },
+      "gradients": {
+        "gold_rush": "linear-gradient(135deg, #d4af37 0%, #b4941f 100%)",
+        "imperial_red": "linear-gradient(135deg, #c92a2a 0%, #9b1c1c 100%)",
+        "ink_wash": "linear-gradient(to bottom, rgba(26,22,20,0) 0%, #1a1614 100%)"
+      }
+    },
+    "visual_enhancers": {
+      "textures": {
+        "wood_grain": "url('https://images.unsplash.com/photo-1610460914077-197531846541?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwzfHxkYXJrJTIwd29vZCUyMHRleHR1cmUlMjBzZWFtbGVzc3xlbnwwfHx8fDE3Njc5ODY4MzB8MA&ixlib=rb-4.1.0&q=85')",
+        "rice_paper": "url('https://images.unsplash.com/photo-1621439618661-bdfbdd14dca2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDJ8MHwxfHNlYXJjaHwzfHxhbnRpcXVlJTIwcGFwZXIlMjB0ZXh0dXJlfGVufDB8fHx8MTc2ODAxMTkzNHww&ixlib=rb-4.1.0&q=85')",
+        "ink_landscape": "url('https://images.unsplash.com/photo-1684871430495-7493bf110ef8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzh8MHwxfHNlYXJjaHwzfHxjaGluZXNlJTIwaW5rJTIwd2FzaCUyMHBhaW50aW5nJTIwbGFuZHNjYXBlJTIwZGFya3xlbnwwfHx8fDE3NjgwMTE5Mjl8MA&ixlib=rb-4.1.0&q=85')"
+      },
+      "borders": {
+        "gold_trim": "1px solid #d4af37",
+        "subtle_wood": "1px solid #4a3b32"
+      },
+      "shadows": {
+        "glow": "0 0 15px rgba(212, 175, 55, 0.3)",
+        "deep": "0 10px 30px -10px rgba(0, 0, 0, 0.8)"
+      }
+    },
+    "layout_strategy": {
+      "grid_system": "Bento Grid (Mode A for Lobby, Mode B for Game Board)",
+      "spacing": "Generous (p-8 to p-12) to mimic the emptiness of a Zen garden.",
+      "container_style": "Glassmorphism but with Wood Texture instead of Blur. Use low opacity black overlay on wood texture."
+    },
+    "components": {
+      "buttons": {
+        "primary": "bg-gradient-to-r from-red-700 to-red-900 text-white border border-red-500 hover:scale-105 transition-transform font-serif tracking-widest uppercase",
+        "secondary": "bg-transparent border border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-black transition-colors font-serif tracking-widest uppercase",
+        "ghost": "text-[#a89f91] hover:text-[#e6dcc3] hover:bg-white/5"
+      },
+      "cards": {
+        "style": "bg-[#241e1b] border border-[#4a3b32] relative overflow-hidden",
+        "decoration": "Add a subtle corner ornament (SVG) in gold to the top-right of cards."
+      },
+      "inputs": {
+        "style": "bg-[#1a1614] border-b-2 border-[#4a3b32] focus:border-[#d4af37] outline-none px-4 py-3 text-[#e6dcc3] placeholder:text-[#5c4d45]"
+      }
+    }
+  },
+  "assets": {
+    "images": {
+      "hero_bg": "https://images.unsplash.com/photo-1684871430495-7493bf110ef8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzh8MHwxfHNlYXJjaHwzfHxjaGluZXNlJTIwaW5rJTIwd2FzaCUyMHBhaW50aW5nJTIwbGFuZHNjYXBlJTIwZGFya3xlbnwwfHx8fDE3NjgwMTE5Mjl8MA&ixlib=rb-4.1.0&q=85",
+      "board_texture": "https://images.unsplash.com/photo-1610460914077-197531846541?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwzfHxkYXJrJTIwd29vZCUyMHRleHR1cmUlMjBzZWFtbGVzc3xlbnwwfHx8fDE3Njc5ODY4MzB8MA&ixlib=rb-4.1.0&q=85",
+      "paper_texture": "https://images.unsplash.com/photo-1621439618661-bdfbdd14dca2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDJ8MHwxfHNlYXJjaHwzfHxhbnRpcXVlJTIwcGFwZXIlMjB0ZXh0dXJlfGVufDB8fHx8MTc2ODAxMTkzNHww&ixlib=rb-4.1.0&q=85",
+      "cherry_blossom": "https://images.unsplash.com/photo-1712788124635-a5537e0b6c1d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzd8MHwxfHNlYXJjaHwxfHxjaGVycnklMjBibG9zc29tJTIwYnJhbmNoJTIwaXNvbGF0ZWR8ZW58MHx8fHwxNzY4MDExOTMxfDA&ixlib=rb-4.1.0&q=85"
+    },
+    "icons": {
+      "library": "lucide-react",
+      "style": "Stroke width 1.5px (Thin and elegant)"
+    }
+  },
+  "instructions_to_main_agent": [
+    "1. INSTALL FONTS: Add the Google Fonts import to /app/frontend/src/index.css immediately.",
+    "2. OVERRIDE COLORS: Replace the CSS variables in /app/frontend/src/index.css with the palette provided above. DELETE the old zinc/slate colors.",
+    "3. TEXTURE IMPLEMENTATION: Create a utility class '.bg-wood' that applies the wood texture with a dark overlay.",
+    "4. SHADCN CUSTOMIZATION: When using Shadcn components (Dialog, Popover, Card), manually override their classes to remove 'bg-background' and add 'bg-[#241e1b] border-[#4a3b32]'.",
+    "5. BOARD DESIGN: The Xiangqi board must be the centerpiece. Use the wood texture. The grid lines should be black with 0.6 opacity.",
+    "6. PIECES: Use CSS circles with the 'Ma Shan Zheng' font for the characters on the pieces. Red pieces: White bg, Red text, Red border. Black pieces: Wood bg, Black text, Black border.",
+    "7. LANGUAGE: The interface is Vietnamese. Ensure all static text is in Vietnamese (e.g., 'Chơi Ngay', 'Cửa Hàng', 'Xếp Hạng').",
+    "8. TESTING: Add data-testid to all interactive elements (buttons, inputs, piece cells)."
+  ],
+  "universal_guidelines": [
+    "Do not use gradients for text unless it's a very large hero title.",
+    "Avoid 'SaaS Blue' (#3b82f6) entirely. It breaks the immersion.",
+    "Use 'sonner' for toasts, styled with the gold/black theme.",
+    "Ensure high contrast for accessibility, even in this dark theme.",
+    "Animations should be slow and ease-out (duration-500 or duration-700)."
+  ]
+}

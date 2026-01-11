@@ -1,0 +1,306 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Ma+Shan+Zheng&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    margin: 0;
+    font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+@layer base {
+    :root {
+        --background: 18 13% 10%;
+        --foreground: 40 30% 85%;
+        --card: 20 15% 12%;
+        --card-foreground: 40 30% 85%;
+        --popover: 20 15% 12%;
+        --popover-foreground: 40 30% 85%;
+        --primary: 0 70% 47%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 43 70% 52%;
+        --secondary-foreground: 18 13% 10%;
+        --muted: 20 15% 20%;
+        --muted-foreground: 35 15% 60%;
+        --accent: 43 70% 52%;
+        --accent-foreground: 18 13% 10%;
+        --destructive: 0 60% 30%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 25 20% 25%;
+        --input: 20 15% 20%;
+        --ring: 43 70% 52%;
+        --chart-1: 0 70% 47%;
+        --chart-2: 43 70% 52%;
+        --chart-3: 20 15% 30%;
+        --chart-4: 35 15% 50%;
+        --chart-5: 0 60% 40%;
+        --radius: 0.5rem;
+        
+        --bg-image: url('https://customer-assets.emergentagent.com/job_chess-strategy-8/artifacts/a958lsjl_image.png');
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Noto Serif SC', 'Be Vietnam Pro', serif;
+        font-weight: 600;
+    }
+}
+
+/* Global page background */
+.page-bg {
+    background: linear-gradient(135deg, rgba(26, 22, 20, 0.65) 0%, rgba(26, 22, 20, 0.75) 100%),
+                var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* Chess board 3D styling */
+.board-3d {
+  background: linear-gradient(145deg, #d4a76a 0%, #c49a5c 50%, #a07840 100%);
+  border: 6px solid #5c3d1e;
+  border-radius: 8px;
+  box-shadow: 
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      0 10px 30px rgba(0, 0, 0, 0.4),
+      inset 0 2px 4px rgba(255, 255, 255, 0.2),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+
+  /* ❌ remove these to fix clicks */
+  /* transform: perspective(1000px) rotateX(5deg); */
+  /* transform-style: preserve-3d; */
+
+  position: relative;
+}
+
+/* Chinese chess piece 3D styling */
+.chess-piece {
+    font-family: 'Ma Shan Zheng', 'Noto Serif SC', cursive;
+    font-size: 1.6rem;
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 400;
+    user-select: none;
+    transform-style: preserve-3d;
+    position: relative;          /* ✅ để z-index hoạt động */
+    z-index: 2;
+    pointer-events: auto;        /* ✅ chắc chắn nhận hover/click */
+}
+
+.chess-piece:hover {
+    transform: scale(1.15) translateY(-3px);
+    z-index: 10;
+}
+
+.chess-piece.red {
+    background: linear-gradient(145deg, #fff8e7 0%, #f0e6d0 50%, #d8c8a8 100%);
+    color: #b91c1c;
+    border: 3px solid #8b1a1a;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.4),
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.6),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.chess-piece.black {
+    background: linear-gradient(145deg, #4a4035 0%, #3a3025 50%, #2a2015 100%);
+    color: #f5f0e6;
+    border: 3px solid #1a1410;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.5),
+        0 2px 4px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.15),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+
+.chess-piece.selected {
+    box-shadow: 
+        0 0 25px rgba(212, 175, 55, 0.9),
+        0 4px 12px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.4);
+    transform: scale(1.2) translateY(-5px);
+    animation: pulse-gold 1.5s ease-in-out infinite;
+}
+
+/* Board cell highlighting */
+.board-cell {
+    width: 3.2rem;
+    height: 3.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.board-cell.valid-move::after {
+    content: '';
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    background: radial-gradient(circle, rgba(76, 175, 80, 0.9), rgba(76, 175, 80, 0.5));
+    border-radius: 50%;
+    animation: pulse 1s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
+}
+
+.board-cell.can-capture::after {
+    content: '';
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    border: 3px solid rgba(220, 38, 38, 0.9);
+    border-radius: 50%;
+    animation: pulse 1s ease-in-out infinite;
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.5);
+}
+
+.board-cell.last-move {
+    background: rgba(212, 175, 55, 0.3);
+    border-radius: 4px;
+}
+
+/* Gold glow effect */
+.gold-glow {
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
+}
+
+/* Imperial button styles */
+.btn-imperial {
+    @apply px-8 py-4 font-semibold tracking-wider uppercase transition-all duration-300 text-lg;
+    background: linear-gradient(135deg, #c92a2a 0%, #9b1c1c 100%);
+    border: 2px solid #c92a2a;
+    font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+.btn-imperial:hover {
+    @apply scale-105;
+    box-shadow: 0 0 30px rgba(201, 42, 42, 0.5);
+}
+
+.btn-gold {
+    @apply px-8 py-4 font-semibold tracking-wider uppercase transition-all duration-300 border-2 text-lg;
+    border-color: #d4af37;
+    color: #d4af37;
+    background: transparent;
+    font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+.btn-gold:hover {
+    background: #d4af37;
+    color: #1a1614;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1614;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4a3b32;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5c4d45;
+}
+
+/* Animation classes */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes pulse-gold {
+    0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
+    50% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.9); }
+}
+
+.animate-pulse-gold {
+    animation: pulse-gold 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(0.95); }
+}
+
+/* Timer styling */
+.timer-urgent {
+    color: #c92a2a;
+    animation: pulse 1s ease-in-out infinite;
+}
+
+/* Ad banner styling */
+.ad-banner {
+    background: linear-gradient(135deg, rgba(36, 30, 27, 0.9), rgba(26, 22, 20, 0.95));
+    border: 1px solid #4a3b32;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Language toggle */
+.lang-toggle {
+    @apply px-3 py-1.5 rounded-full text-sm font-medium transition-all;
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid #d4af37;
+    color: #d4af37;
+}
+
+.lang-toggle:hover {
+    background: rgba(212, 175, 55, 0.3);
+}
+
+/* Card glass effect */
+.card-glass {
+    background: rgba(36, 30, 27, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(74, 59, 50, 0.6);
+}
+
+/* Online indicator */
+.online-dot {
+    width: 10px;
+    height: 10px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@layer base {
+    [data-debug-wrapper="true"] {
+        display: contents !important;
+    }
+}
