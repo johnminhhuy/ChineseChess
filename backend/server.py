@@ -47,21 +47,19 @@ api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
 
 
+
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
 def parse_origins(value: str):
-    return [o.strip() for o in (value or "").split(",") if o.strip()]
+    return [o.strip().rstrip("/") for o in (value or "").split(",") if o.strip()]
 
-origins = parse_origins(os.getenv("CORS_ORIGINS")) or [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+origins = parse_origins(os.getenv("CORS_ORIGINS", "https://www.cotuong247.com,https://cotuong247.com"))
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=False,  # JWT header -> không cần cookie
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
