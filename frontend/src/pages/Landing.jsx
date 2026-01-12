@@ -119,7 +119,7 @@ export default function Landing() {
         {/* Ad Banner 1 */}
         <section className="container mx-auto px-4 py-4">
           <div className="ad-banner p-4 text-center" data-testid="ad-banner-1">
-            <p className="text-[#a89f91] text-sm">📢 Quảng cáo - Liên hệ đặt banner: ads@cotuong.vn</p>
+            <p className="text-[#a89f91] text-sm">📢 Quảng cáo - Liên hệ đặt banner: cotuong247.com@gmail.com</p>
           </div>
         </section>
 
@@ -306,7 +306,7 @@ export default function Landing() {
         {/* Ad Banner 2 */}
         <section className="container mx-auto px-4 py-4">
           <div className="ad-banner p-4 text-center" data-testid="ad-banner-2">
-            <p className="text-[#a89f91] text-sm">📢 Đặt quảng cáo của bạn tại đây - Liên hệ: sponsor@cotuong.vn</p>
+            <p className="text-[#a89f91] text-sm">📢 Đặt quảng cáo của bạn tại đây - Liên hệ: cotuong247.com@gmail.com</p>
           </div>
         </section>
 
@@ -314,7 +314,7 @@ export default function Landing() {
         <footer className="border-t border-[#4a3b32]/50 mt-12">
           <div className="container mx-auto px-4 py-8">
             <div className="text-center text-[#a89f91] text-base">
-              <p>© 2024 Cờ Tướng Online - Nền tảng đấu cờ tướng trực tuyến hàng đầu Việt Nam</p>
+              <p>© 2026 Cờ Tướng Online - Nền tảng đấu cờ tướng trực tuyến hàng đầu Việt Nam</p>
             </div>
           </div>
         </footer>

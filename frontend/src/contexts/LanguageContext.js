@@ -15,7 +15,7 @@ const translations = {
     profile: 'Hồ Sơ',
     
     // Landing
-    heroTitle: 'THIÊN HẠ ĐỔ KỲ',
+    heroTitle: 'THIÊN HẠ ĐỒ KỲ',
     heroSubtitle: 'SO TÀI CỜ TƯỚNG ĐỈNH CAO!',
     heroDesc: 'Tham gia cộng đồng kỳ thủ hàng đầu Việt Nam. Đấu trí, nâng cao ELO và trở thành Kỳ Vương!',
     playNowBtn: 'CHƠI NGAY',
