@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "./components/ui/sonner";
 import { AuthProvider } from "./contexts/AuthContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
+
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -15,6 +16,12 @@ import Shop from "./pages/Shop";
 import ShopSuccess from "./pages/ShopSuccess";
 import Tournament from "./pages/Tournament";
 import WatchGame from "./pages/WatchGame";
+
+// ✅ new pages
+import ForgotPassword from "./pages/ForgotPassword";
+import ForgotUsername from "./pages/ForgotUsername";
+import ResetPassword from "./pages/ResetPassword";
+
 import "./App.css";
 
 function App() {
@@ -25,8 +32,15 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Landing />} />
+
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+
+              {/* ✅ Forgot / Reset */}
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/forgot-username" element={<ForgotUsername />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+
               <Route path="/lobby" element={<Lobby />} />
               <Route path="/game/:gameId" element={<Game />} />
               <Route path="/ai-game" element={<AIGame />} />
@@ -37,17 +51,19 @@ function App() {
               <Route path="/shop/success" element={<ShopSuccess />} />
               <Route path="/tournament" element={<Tournament />} />
               <Route path="/watch/:gameId" element={<WatchGame />} />
+
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </BrowserRouter>
-          <Toaster 
+
+          <Toaster
             position="top-right"
             toastOptions={{
               style: {
-                background: '#241e1b',
-                border: '1px solid #4a3b32',
-                color: '#e6dcc3',
-                fontSize: '16px',
+                background: "#241e1b",
+                border: "1px solid #4a3b32",
+                color: "#e6dcc3",
+                fontSize: "16px",
               },
             }}
           />

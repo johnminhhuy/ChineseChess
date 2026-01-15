@@ -7,13 +7,25 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { toast } from 'sonner';
-import { LogIn, Mail, Lock, ArrowLeft } from 'lucide-react';
+import {
+  LogIn,
+  Mail,
+  Lock,
+  ArrowLeft,
+  Eye,
+  EyeOff,
+  KeyRound,
+  UserSearch
+} from 'lucide-react';
 
 export default function Login() {
   const { login } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -28,7 +40,10 @@ export default function Login() {
       toast.success('Đăng nhập thành công!');
       navigate('/lobby');
     } catch (error) {
-      const message = error.response?.data?.detail || 'Đăng nhập thất bại';
+      const message =
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Đăng nhập thất bại';
       toast.error(message);
     } finally {
       setLoading(false);
@@ -56,7 +71,10 @@ export default function Login() {
               <span className="font-['Ma_Shan_Zheng'] text-3xl text-white">將</span>
             </div>
           </Link>
-          <CardTitle className="font-serif text-3xl text-[#e6dcc3]">{t('login')}</CardTitle>
+
+          <CardTitle className="font-serif text-3xl text-[#e6dcc3]">
+            {t('login')}
+          </CardTitle>
           <CardDescription className="text-[#a89f91] text-base">
             {t('welcomeBack')}
           </CardDescription>
@@ -64,8 +82,11 @@ export default function Login() {
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email */}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-[#e6dcc3] text-base">{t('email')}</Label>
+              <Label htmlFor="email" className="text-[#e6dcc3] text-base">
+                {t('email')}
+              </Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5c4d45]" />
                 <Input
@@ -81,23 +102,65 @@ export default function Login() {
               </div>
             </div>
 
+            {/* Password */}
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-[#e6dcc3] text-base">{t('password')}</Label>
+              <Label htmlFor="password" className="text-[#e6dcc3] text-base">
+                {t('password')}
+              </Label>
+
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5c4d45]" />
+
                 <Input
                   id="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder="••••••••"
-                  className="pl-11 h-12 text-base bg-[#1a1614] border-[#4a3b32] text-[#e6dcc3] placeholder:text-[#5c4d45] focus:border-[#d4af37]"
+                  className="pl-11 pr-12 h-12 text-base bg-[#1a1614] border-[#4a3b32] text-[#e6dcc3] placeholder:text-[#5c4d45] focus:border-[#d4af37]"
                   required
                   data-testid="login-password"
                 />
+
+                {/* Show/Hide Password */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5c4d45] hover:text-[#d4af37]"
+                  aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                  data-testid="toggle-password"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+
+              {/* Forgot links */}
+              <div className="flex items-center justify-between pt-2 text-sm">
+                <Link
+                  to="/forgot-username"
+                  className="inline-flex items-center gap-2 text-[#d4af37] hover:underline"
+                  data-testid="forgot-username"
+                >
+                  <UserSearch className="w-4 h-4" />
+                  Quên username?
+                </Link>
+
+                <Link
+                  to="/forgot-password"
+                  className="inline-flex items-center gap-2 text-[#d4af37] hover:underline"
+                  data-testid="forgot-password"
+                >
+                  <KeyRound className="w-4 h-4" />
+                  Quên mật khẩu?
+                </Link>
               </div>
             </div>
 
+            {/* Submit */}
             <Button
               type="submit"
               disabled={loading}

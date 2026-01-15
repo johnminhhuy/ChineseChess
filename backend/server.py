@@ -14,6 +14,11 @@ import bcrypt
 import json
 import asyncio
 from enum import Enum
+from pydantic import EmailStr
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -37,6 +42,21 @@ db = client[os.environ["DB_NAME"]]
 JWT_SECRET = os.environ.get('JWT_SECRET', 'xiangqi-secret-key-2024')
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
+
+# Reset password token config
+RESET_SECRET = os.environ.get("RESET_SECRET", JWT_SECRET)  # có thể tách riêng
+RESET_EXPIRES_MIN = int(os.environ.get("RESET_EXPIRES_MIN", "30"))
+
+# Frontend URL để tạo link reset (prod domain hoặc local)
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
+
+# SMTP config (nếu thiếu -> sẽ log ra console để test)
+SMTP_HOST = os.environ.get("SMTP_HOST", "")
+SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
+SMTP_USER = os.environ.get("SMTP_USER", "")
+SMTP_PASS = os.environ.get("SMTP_PASS", "")
+SMTP_FROM = os.environ.get("SMTP_FROM", SMTP_USER or "no-reply@cotuong247.com")
+
 
 # Stripe Config
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', 'sk_test_emergent')
@@ -70,6 +90,17 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # ==================== MODELS ====================
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+class ForgotUsernameRequest(BaseModel):
+    email: EmailStr
+
 
 class PieceType(str, Enum):
     GENERAL = "general"  # Tướng/Soái
@@ -559,6 +590,49 @@ def create_token(user_id: str) -> str:
     }
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
+def create_reset_token(email: str) -> str:
+    payload = {
+        "sub": email,
+        "type": "reset",
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=RESET_EXPIRES_MIN),
+    }
+    return jwt.encode(payload, RESET_SECRET, algorithm=JWT_ALGORITHM)
+
+def verify_reset_token(token: str) -> str:
+    try:
+        payload = jwt.decode(token, RESET_SECRET, algorithms=[JWT_ALGORITHM])
+        if payload.get("type") != "reset":
+            raise HTTPException(status_code=400, detail="Invalid token type")
+        return payload.get("sub")
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=400, detail="Reset token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=400, detail="Invalid reset token")
+
+def send_email(to_email: str, subject: str, html: str):
+    """
+    Prod: gửi SMTP nếu có config.
+    Dev: nếu thiếu SMTP -> log email nội dung ra console để test.
+    """
+    if not SMTP_HOST or not SMTP_USER or not SMTP_PASS:
+        logger.warning("[EMAIL DEV MODE] SMTP not configured. Printing email instead.")
+        logger.warning(f"To: {to_email}")
+        logger.warning(f"Subject: {subject}")
+        logger.warning(f"HTML: {html}")
+        return
+
+    msg = MIMEMultipart("alternative")
+    msg["From"] = SMTP_FROM
+    msg["To"] = to_email
+    msg["Subject"] = subject
+    msg.attach(MIMEText(html, "html", "utf-8"))
+
+    with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
+        server.starttls()
+        server.login(SMTP_USER, SMTP_PASS)
+        server.sendmail(SMTP_FROM, [to_email], msg.as_string())
+
+
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     try:
         payload = jwt.decode(credentials.credentials, JWT_SECRET, algorithms=[JWT_ALGORITHM])
@@ -690,6 +764,79 @@ async def login(data: UserLogin):
 @api_router.get("/auth/profile")
 async def get_profile(user: dict = Depends(get_current_user)):
     return user
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(data: ForgotPasswordRequest):
+    """
+    Luôn trả 200 để tránh lộ email có tồn tại hay không.
+    Nếu user tồn tại -> gửi email link reset.
+    """
+    user = await db.users.find_one({"email": str(data.email)})
+    if user:
+        token = create_reset_token(user["email"])
+        reset_link = f"{FRONTEND_URL}/reset-password?token={token}"
+
+        send_email(
+            to_email=user["email"],
+            subject="Reset mật khẩu - cotuong247",
+            html=f"""
+              <div style="font-family:Arial,sans-serif">
+                <h3>Đặt lại mật khẩu</h3>
+                <p>Click link bên dưới để đặt lại mật khẩu (hết hạn sau {RESET_EXPIRES_MIN} phút):</p>
+                <p><a href="{reset_link}">{reset_link}</a></p>
+                <p>Nếu bạn không yêu cầu, hãy bỏ qua email này.</p>
+              </div>
+            """
+        )
+
+    return {"detail": "Nếu email tồn tại, hệ thống đã gửi hướng dẫn đặt lại mật khẩu."}
+
+
+@api_router.post("/auth/reset-password")
+async def reset_password(data: ResetPasswordRequest):
+    """
+    Nhận token + mật khẩu mới. Token hợp lệ -> update password.
+    """
+    if len(data.new_password) < 6:
+        raise HTTPException(status_code=400, detail="Mật khẩu phải có ít nhất 6 ký tự")
+
+    email = verify_reset_token(data.token)
+
+    user = await db.users.find_one({"email": email})
+    if not user:
+        # token hợp lệ nhưng user không còn -> coi như invalid
+        raise HTTPException(status_code=400, detail="Invalid reset token")
+
+    await db.users.update_one(
+        {"email": email},
+        {"$set": {"password": hash_password(data.new_password)}}
+    )
+
+    return {"detail": "Đổi mật khẩu thành công. Bạn có thể đăng nhập lại."}
+
+
+@api_router.post("/auth/forgot-username")
+async def forgot_username(data: ForgotUsernameRequest):
+    """
+    Luôn trả 200 để tránh lộ email có tồn tại hay không.
+    Nếu user tồn tại -> gửi email username.
+    """
+    user = await db.users.find_one({"email": str(data.email)})
+    if user:
+        send_email(
+            to_email=user["email"],
+            subject="Nhắc username - cotuong247",
+            html=f"""
+              <div style="font-family:Arial,sans-serif">
+                <h3>Username của bạn</h3>
+                <p>Username: <b>{user["username"]}</b></p>
+                <p>Nếu bạn không yêu cầu, hãy bỏ qua email này.</p>
+              </div>
+            """
+        )
+
+    return {"detail": "Nếu email tồn tại, hệ thống đã gửi username qua email."}
+
 
 # ==================== USER PROFILE UPDATE ====================
 
